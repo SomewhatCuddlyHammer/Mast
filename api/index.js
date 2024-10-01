@@ -1,37 +1,29 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS
-app.use(cors());
+// Middleware to parse JSON
 app.use(bodyParser.json());
 
-// Define the verification token
+// Verification token
 const VERIFICATION_TOKEN = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
 
-// Welcome route
-app.get('/', (req, res) => {
-    res.send('Welcome to the eBay Notification Receiver!');
-});
-
-// Main POST route to handle notifications
+// Endpoint for handling notifications
 app.post('/', (req, res) => {
     try {
-        // Check the verification token in headers
-        const token = req.headers['x-ebay-token'];
-        if (token !== VERIFICATION_TOKEN) {
-            return res.status(403).send('Forbidden: Invalid Token');
+        const verificationToken = req.headers['x-verification-token'];
+        
+        // Check for the verification token
+        if (verificationToken !== VERIFICATION_TOKEN) {
+            return res.status(403).send('Forbidden: Invalid token');
         }
 
-        // Log the received notification for debugging
+        // Handle the notification
         console.log('Notification received:', req.body);
 
-        // Process the notification (your logic here)
-        // For now, just send a success response
-        res.status(200).send('Notification processed successfully');
+        // Respond to eBay's challenge
+        res.status(200).send('Notification received');
     } catch (error) {
         console.error('Error processing notification:', error);
         res.status(500).send('Internal Server Error');
@@ -42,5 +34,6 @@ app.post('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
 
 
