@@ -7,36 +7,40 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 // Define allowed IP addresses
-const allowedIPs = ['107.218.233.176']; // Your actual IP address
+const allowedIPs = ['107.218.233.176']; // Replace with your actual IP address(es)
 
 // Middleware for IP whitelisting
 app.use((req, res, next) => {
     const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
     if (allowedIPs.includes(clientIP)) {
-        next(); // Proceed to the next middleware
+        next(); // IP is allowed, proceed to the next middleware
     } else {
         res.status(403).json({ error: 'Forbidden: Your IP is not allowed' });
     }
 });
 
-// GET endpoint for the root URL
-app.get('/', (req, res) => {
-    res.send('Welcome to the mast API!');
-});
-
-// POST endpoint to handle notifications
+// Example endpoint to receive notifications
 app.post('/', (req, res) => {
-    console.log('Received POST request:', req.body);
-    if (req.body && req.body.challenge) {
-        return res.status(200).send(req.body.challenge);
+    const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456'; // Your verification token
+
+    // Check for the verification token in the request headers
+    const token = req.headers['x-verification-token'];
+
+    if (token === verificationToken) {
+        // Handle the notification (you can log the received notification here)
+        console.log('Notification received:', req.body);
+        res.status(200).send('Notification received');
+    } else {
+        res.status(403).send('Forbidden: Invalid verification token');
     }
-    res.status(200).send('Notification received');
 });
 
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
 
 
 
