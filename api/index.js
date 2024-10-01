@@ -23,7 +23,7 @@ app.get('/ebay-notification', (req, res) => {
 
     // Validate that challengeCode exists
     if (!challengeCode) {
-        return res.status(400).send({ error: 'No challenge code provided' });
+        return res.status(400).json({ error: 'No challenge code provided' });
     }
 
     // Create the response hash
@@ -35,6 +35,17 @@ app.get('/ebay-notification', (req, res) => {
 
     // Respond to eBay with the challenge response
     res.status(200).json({ challengeResponse: responseHash });
+});
+
+// Handle POST requests for notifications
+app.post('/ebay-notification', (req, res) => {
+    const notification = req.body;
+
+    // Process the notification here (for example, log it or handle deletion requests)
+    console.log('Received eBay notification:', notification);
+
+    // Respond with a 200 OK status
+    res.sendStatus(200);
 });
 
 // Start the server
