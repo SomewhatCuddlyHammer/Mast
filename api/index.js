@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Middleware to parse JSON
 app.use(bodyParser.json());
@@ -11,15 +11,14 @@ app.get('/', (req, res) => {
     res.send('Welcome to the eBay Notification Endpoint!');
 });
 
-// Example endpoint for receiving notifications
+// Define a POST route for notifications
 app.post('/', (req, res) => {
     console.log('Notification received:', req.body);
-    // Respond to eBay's challenge
-    const challengeCode = req.body.challengeCode; // Ensure this matches the actual challenge code format
+    const challengeCode = req.body.challengeCode;
     if (challengeCode) {
-        res.send(challengeCode); // Respond back with the challenge code
+        res.send(challengeCode);
     } else {
-        res.status(400).send('Challenge code missing'); // Send an error response if no challenge code is found
+        res.status(400).send('Challenge code missing');
     }
 });
 
