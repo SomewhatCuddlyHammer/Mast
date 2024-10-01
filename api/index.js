@@ -6,40 +6,31 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON
 app.use(bodyParser.json());
 
-// Define allowed IP addresses
-const allowedIPs = ['107.218.233.176']; // Replace with your actual IP address(es)
+// Example endpoint to handle POST requests from eBay
+app.post('/', (req, res) => {
+    const verificationToken = req.headers['x-verification-token'];
 
-// Middleware for IP whitelisting
-app.use((req, res, next) => {
-    const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-
-    if (allowedIPs.includes(clientIP)) {
-        next(); // IP is allowed, proceed to the next middleware
+    // Check if the verification token matches
+    if (verificationToken === 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456') {
+        // Handle the notification
+        console.log('Notification received:', req.body);
+        res.sendStatus(200); // Respond with 200 OK
     } else {
-        res.status(403).json({ error: 'Forbidden: Your IP is not allowed' });
+        console.log('Invalid verification token');
+        res.sendStatus(403); // Forbidden
     }
 });
 
-// Example endpoint to receive notifications
-app.post('/', (req, res) => {
-    const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456'; // Your verification token
-
-    // Check for the verification token in the request headers
-    const token = req.headers['x-verification-token'];
-
-    if (token === verificationToken) {
-        // Handle the notification (you can log the received notification here)
-        console.log('Notification received:', req.body);
-        res.status(200).send('Notification received');
-    } else {
-        res.status(403).send('Forbidden: Invalid verification token');
-    }
+// Example GET endpoint for testing
+app.get('/', (req, res) => {
+    res.send('Welcome to the mast API!');
 });
 
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
 
 
 
