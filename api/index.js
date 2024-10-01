@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 // Challenge token from eBay
-const EBAY_VERIFICATION_TOKEN = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
+const EBAY_VERIFICATION_TOKEN = 'Z1a2B3c4D5e6F7g8H9i0J_kL-mNopQrsTuVwXyZ123456';
 
 // Handle POST requests from eBay
 app.post('/', (req, res) => {
