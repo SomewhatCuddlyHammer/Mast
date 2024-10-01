@@ -12,6 +12,11 @@ app.use(bodyParser.json());
 // Your specific token
 const VERIFICATION_TOKEN = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
 
+// GET route for testing server
+app.get('/', (req, res) => {
+    res.send('Welcome to the eBay Notification Receiver!');
+});
+
 // Notification endpoint
 app.post('/', (req, res) => {
     // Log the notification body for debugging
@@ -27,10 +32,6 @@ app.post('/', (req, res) => {
     // If the token is valid, process the notification
     console.log('Valid token. Processing notification...');
 
-    // Here you would handle the notification
-    // For example: 
-    // handleNotification(req.body);
-
     // Respond to eBay to acknowledge receipt of the notification
     res.status(200).send('Notification processed successfully');
 });
@@ -39,3 +40,4 @@ app.post('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
