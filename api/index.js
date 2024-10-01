@@ -12,7 +12,6 @@ const allowedIPs = ['107.218.233.176']; // Replace with your actual IP address(e
 // Middleware for IP whitelisting
 app.use((req, res, next) => {
     const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-
     if (allowedIPs.includes(clientIP)) {
         next(); // IP is allowed, proceed to the next middleware
     } else {
@@ -20,18 +19,15 @@ app.use((req, res, next) => {
     }
 });
 
-// Welcome message for GET requests
-app.get('/', (req, res) => {
-    res.send('Welcome to the Mast API!');
-});
-
-// Webhook endpoint to receive events
-app.post('/webhook', (req, res) => {
-    console.log('Received event:', req.body); // Log the received event
-    res.status(200).send('Event received'); // Respond to acknowledge receipt
+// Example endpoint for eBay notifications
+app.post('/notifications', (req, res) => {
+    console.log('Received notification:', req.body);
+    // Handle the notification as needed
+    res.sendStatus(200); // Respond back with success status
 });
 
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
