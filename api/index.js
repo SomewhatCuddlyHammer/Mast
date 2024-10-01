@@ -20,14 +20,18 @@ app.use((req, res, next) => {
     }
 });
 
-// Example endpoint
+// Welcome message for GET requests
 app.get('/', (req, res) => {
-    res.send('Welcome to the mast API!');
+    res.send('Welcome to the Mast API!');
+});
+
+// Webhook endpoint to receive events
+app.post('/webhook', (req, res) => {
+    console.log('Received event:', req.body); // Log the received event
+    res.status(200).send('Event received'); // Respond to acknowledge receipt
 });
 
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-
