@@ -6,6 +6,11 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON
 app.use(bodyParser.json());
 
+// Define a GET route for the root
+app.get('/', (req, res) => {
+    res.send('Welcome to the eBay Notification Endpoint!');
+});
+
 // Example endpoint for receiving notifications
 app.post('/', (req, res) => {
     console.log('Notification received:', req.body);
