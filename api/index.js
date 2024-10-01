@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -7,31 +8,26 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Challenge token from eBay
-const EBAY_VERIFICATION_TOKEN = 'Z1a2B3c4D5e6F7g8H9i0J_kL-mNopQrsTuVwXyZ123456';
+// Your verification token
+const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
+// Your endpoint URL
+const endpointUrl = 'https://mast-ebay-mu.vercel.app/';
 
-// Handle POST requests from eBay
-app.post('/', (req, res) => {
-    // Log the incoming request body
-    console.log('Notification received:', req.body);
+app.get('/account-deletion', (req, res) => {
+    // Retrieve the challenge code from the query parameters
+    const challengeCode = req.query.challenge_code;
 
-    // Respond to eBay's validation challenge
-    if (req.body.challenge) {
-        const challengeResponse = req.body.challenge;
-
-        // Send back the challenge response
-        return res.status(200).send(challengeResponse);
+    if (!challengeCode) {
+        return res.status(400).json({ error: 'Missing challenge_code parameter' });
     }
 
-    // Handle the notification (e.g., account deletion)
-    // Process the notification as needed here
+    // Hash the challenge code, verification token, and endpoint URL
+    const hash = crypto.createHash('sha256');
+    hash.update(challengeCode + verificationToken + endpointUrl);
+    const responseHash = hash.digest('hex');
 
-    res.status(200).send('Notification received');
-});
-
-// Optional: Handle GET requests
-app.get('/', (req, res) => {
-    res.status(200).send('Welcome to the eBay Notification API');
+    // Send the response to eBay
+    res.status(200).json({ challengeResponse: responseHash });
 });
 
 // Start the server
