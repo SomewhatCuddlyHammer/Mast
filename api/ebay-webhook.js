@@ -1,12 +1,26 @@
-export default async function handler(req, res) {
-    if (req.method === 'POST') {
-        const eventData = req.body;
-        console.log("eBay Notification Data:", eventData);
+// Mast/api/ebay-webhook.js
 
-        // You can store or process the eventData here
+const express = require('express');
+const bodyParser = require('body-parser');
 
-        res.status(200).json({ message: 'Notification received' });
-    } else {
-        res.status(405).json({ message: 'Method not allowed' });
-    }
-}
+const router = express.Router();
+
+// Use body-parser middleware to parse JSON bodies
+router.use(bodyParser.json());
+
+// Define the webhook endpoint
+router.post('/webhook', (req, res) => {
+    const notification = req.body;
+
+    // Log the notification for debugging purposes
+    console.log('Received eBay notification:', notification);
+
+    // Handle the notification (custom logic goes here)
+    // For example, you might want to process different event types
+    // Check notification type and take appropriate action
+
+    // Send an appropriate response back to eBay
+    res.status(200).send('Webhook received');
+});
+
+module.exports = router;
