@@ -6,19 +6,15 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON
 app.use(bodyParser.json());
 
-// Example endpoint to handle incoming notifications
+// Example endpoint for receiving notifications
 app.post('/', (req, res) => {
-    console.log('Received a POST request');
-    console.log('Request Body:', req.body); // Log the request body for debugging
-
-    // Check if the request contains the challenge code from eBay
-    if (req.body && req.body.challenge) {
-        console.log('Received challenge code:', req.body.challenge);
-        // Respond with the challenge code to validate the endpoint
-        res.status(200).send(req.body.challenge);
+    console.log('Notification received:', req.body);
+    // Respond to eBay's challenge
+    const challengeCode = req.body.challengeCode; // Ensure this matches the actual challenge code format
+    if (challengeCode) {
+        res.send(challengeCode); // Respond back with the challenge code
     } else {
-        // Handle other notifications or data
-        res.status(200).send('Notification received');
+        res.status(400).send('Challenge code missing'); // Send an error response if no challenge code is found
     }
 });
 
@@ -26,10 +22,3 @@ app.post('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-
-
-
-
-
-
