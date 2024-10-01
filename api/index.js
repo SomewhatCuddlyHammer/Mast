@@ -5,15 +5,20 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Use body-parser middleware
+// Middleware to parse JSON
 app.use(bodyParser.json());
 
 // Replace with your actual verification token
 const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
 const endpointUrl = `https://mast-ebay-mu.vercel.app/ebay-notification`; // Your endpoint URL
 
-// Endpoint to handle eBay notifications
-app.post('/ebay-notification', (req, res) => {
+// Handle GET requests to the base URL (for testing)
+app.get('/', (req, res) => {
+    res.send('eBay Notification Server is Running!');
+});
+
+// Endpoint to handle eBay notifications (challenge response)
+app.get('/ebay-notification', (req, res) => {
     const challengeCode = req.query.challenge_code;
 
     // Validate that challengeCode exists
