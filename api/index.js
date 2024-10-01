@@ -1,24 +1,28 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware to parse JSON
 app.use(bodyParser.json());
 
-// Define a GET route for the root
-app.get('/', (req, res) => {
-    res.send('Welcome to the eBay Notification Endpoint!');
-});
+// Verification token
+const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
 
-// Define a POST route for notifications
+// Example endpoint to receive notifications
 app.post('/', (req, res) => {
-    console.log('Notification received:', req.body);
-    const challengeCode = req.body.challengeCode;
-    if (challengeCode) {
-        res.send(challengeCode);
+    const receivedToken = req.headers['x-verification-token'];
+
+    // Check if the verification token matches
+    if (receivedToken === verificationToken) {
+        console.log('Valid token. Processing notification...');
+        console.log(req.body); // Log the notification details
+
+        // Respond with the challenge code
+        res.status(200).send('Notification received.');
     } else {
-        res.status(400).send('Challenge code missing');
+        console.log('Invalid token. Access denied.');
+        res.status(403).send('Forbidden: Invalid verification token.');
     }
 });
 
