@@ -1,29 +1,41 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON
+// Middleware
+app.use(cors());
 app.use(bodyParser.json());
 
-// Expected verification token
-const expectedToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
+// Your specific token
+const VERIFICATION_TOKEN = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
 
-// Example endpoint to receive POST requests
+// Notification endpoint
 app.post('/', (req, res) => {
-    const verificationToken = req.headers['x-verification-token'];
+    // Log the notification body for debugging
+    console.log('Notification received:', req.body);
 
-    // Check if the verification token matches the expected token
-    if (verificationToken === expectedToken) {
-        console.log('Notification received:', req.body); // Log the body for debugging
-        res.status(200).send('Notification received');
-    } else {
-        console.log('Invalid verification token'); // Log invalid token for debugging
-        res.status(403).send('Forbidden: Invalid verification token');
+    // Verify the token
+    const token = req.headers['x-ebay-token'];
+    if (token !== VERIFICATION_TOKEN) {
+        console.log('Token validation failed');
+        return res.status(403).send('Forbidden');
     }
+
+    // If the token is valid, process the notification
+    console.log('Valid token. Processing notification...');
+
+    // Here you would handle the notification
+    // For example: 
+    // handleNotification(req.body);
+
+    // Respond to eBay to acknowledge receipt of the notification
+    res.status(200).send('Notification processed successfully');
 });
 
-// Start the server
+// Starting the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
