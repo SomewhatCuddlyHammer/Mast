@@ -6,24 +6,19 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON
 app.use(bodyParser.json());
 
-// Example endpoint
-app.get('/', (req, res) => {
-    res.send('Welcome to the mast API!');
-});
-
-// Endpoint to handle POST requests (for receiving notifications)
+// Example endpoint to handle incoming notifications
 app.post('/', (req, res) => {
-    // Check for eBay's challenge token
-    const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456'; // Replace with your actual token
+    console.log('Received a POST request');
+    console.log('Request Body:', req.body); // Log the request body for debugging
 
-    // Handle eBay challenge code validation
+    // Check if the request contains the challenge code from eBay
     if (req.body && req.body.challenge) {
-        // Respond with the verification token
-        res.json({ challenge: verificationToken });
+        console.log('Received challenge code:', req.body.challenge);
+        // Respond with the challenge code to validate the endpoint
+        res.status(200).send(req.body.challenge);
     } else {
-        // Log the notification received
-        console.log('Notification received:', req.body);
-        res.sendStatus(200); // Respond with success
+        // Handle other notifications or data
+        res.status(200).send('Notification received');
     }
 });
 
@@ -31,6 +26,7 @@ app.post('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
 
 
 
