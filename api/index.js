@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 // Your verification token
 const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
 // Your endpoint URL
-const endpointUrl = 'https://mast-ebay-mu.vercel.app/';
+const endpointUrl = 'https://mast-ebay-mu.vercel.app/account-deletion';
 
 app.get('/account-deletion', (req, res) => {
     // Retrieve the challenge code from the query parameters
