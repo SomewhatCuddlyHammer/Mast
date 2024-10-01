@@ -1,36 +1,44 @@
 const express = require('express');
-const crypto = require('crypto');
 const bodyParser = require('body-parser');
+const crypto = require('crypto');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Your verification token
-const verificationToken = 'A1b2C3d4E5f6G7h8I9j0K_L-MnopqRstUvwxYz123456';
-// Your endpoint URL
-const endpointUrl = 'https://mast-ebay-mu.vercel.app/account-deletion';
+// Define your verification token (make sure this is a secure value)
+const verificationToken = 'YOUR_VERIFICATION_TOKEN_HERE';
 
-app.get('/account-deletion', (req, res) => {
-    // Retrieve the challenge code from the query parameters
-    const challengeCode = req.query.challenge_code;
+// Handle POST requests to the specified endpoint
+app.post('/your-endpoint', (req, res) => {
+    // Extract the challenge code and endpoint from the request
+    const challengeCode = req.query.challenge_code; // Adjust according to how the challenge code is passed
+    const endpoint = req.protocol + '://' + req.get('host') + req.originalUrl;
 
+    // Check if challenge code is received
     if (!challengeCode) {
-        return res.status(400).json({ error: 'Missing challenge_code parameter' });
+        return res.status(400).send('Challenge code is required.');
     }
 
-    // Hash the challenge code, verification token, and endpoint URL
+    // Create the hash
     const hash = crypto.createHash('sha256');
-    hash.update(challengeCode + verificationToken + endpointUrl);
+    hash.update(challengeCode);
+    hash.update(verificationToken);
+    hash.update(endpoint);
     const responseHash = hash.digest('hex');
 
-    // Send the response to eBay
-    res.status(200).json({ challengeResponse: responseHash });
+    // Respond with the challengeResponse
+    res.json({ challengeResponse: responseHash });
+});
+
+// Handle GET requests to verify the server is running
+app.get('/', (req, res) => {
+    res.send('Server is running');
 });
 
 // Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
 });
